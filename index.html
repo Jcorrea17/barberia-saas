@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>💈 BarberSaaS</title>
+<style>
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Arial, sans-serif;
+  background: #1a1a1a;
+  color: #fff;
+  min-height: 100vh;
+}
+
+/* ===== LOGIN ===== */
+#login {
+  position: fixed;
+  inset: 0;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.login-box {
+  background: #2a2a2a;
+  border: 1px solid #c9a84c;
+  border-radius: 12px;
+  padding: 40px;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-box h2 {
+  text-align: center;
+  color: #c9a84c;
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.login-box input, .login-box select {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: white;
+  font-size: 14px;
+  width: 100%;
+}
+
+.btn-gold {
+  background: #c9a84c;
+  color: #1a1a1a;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  width: 100%;
+}
+
+.btn-gold:hover { background: #e0c060; }
+
+.btn-outline {
+  background: transparent;
+  color: #c9a84c;
+  border: 1px solid #c9a84c;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+}
+
+.btn-outline:hover { background: #c9a84c22; }
+
+/* ===== APP ===== */
+#app { display: none; min-height: 100vh; }
+
+#navbar {
+  background: #111;
+  border-bottom: 2px solid #c9a84c;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#navbar h1 { color: #c9a84c; font-size: 22px; }
+#navbar span { font-size: 13px; color: #aaa; }
+
+#tabs {
+  display: flex;
+  background: #222;
+  border-bottom: 1px solid #333;
+}
+
+.tab {
+  padding: 14px 28px;
+  cursor: pointer;
+  color: #aaa;
+  font-size: 14px;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab:hover { color: #c9a84c; }
+.tab.activo { color: #c9a84c; border-bottom-color: #c9a84c; }
+
+.panel { display: none; padding: 28px; max-width: 900px; margin: 0 auto; }
+.panel.activo { display: block; }
+
+.panel h2 {
+  color: #c9a84c;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.card {
+  background: #2a2a2a;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border-left: 4px solid #c9a84c;
+}
+
+.card h3 { margin-bottom: 6px; font-size: 16px; }
+.card p { color: #aaa; font-size: 13px; margin-bottom: 4px; }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: white;
+  font-size: 14px;
+}
+
+.form-hint {
+  color: #888;
+  font-size: 12px;
+  margin-top: -6px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.badge-pendiente  { background: #f0a500; color: #000; }
+.badge-confirmado { background: #00a884; color: #fff; }
+.badge-completado { background: #555;    color: #ccc; }
+.badge-cancelado  { background: #c0392b; color: #fff; }
+
+.btn-small {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  margin-right: 6px;
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+.btn-confirmar { background: #00a884; color: white; }
+.btn-completar { background: #c9a84c; color: #1a1a1a; }
+.btn-cancelar  { background: #c0392b; color: white; }
+
+.servicios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.servicio-card {
+  background: #2a2a2a;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid #444;
+}
+
+.servicio-card h3 { color: #c9a84c; margin-bottom: 6px; }
+.servicio-card p  { color: #aaa; font-size: 13px; }
+
+.separador {
+  border: none;
+  border-top: 1px solid #333;
+  margin: 24px 0;
+}
+
+/* HORARIO VISUAL */
+.horario-bar {
+  background: #222;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.horario-hora {
+  color: #c9a84c;
+  font-weight: bold;
+  min-width: 100px;
+}
+
+.horario-info { color: #ccc; }
+
+.error-msg {
+  background: #c0392b22;
+  border: 1px solid #c0392b;
+  color: #ff6b6b;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.success-msg {
+  background: #00a88422;
+  border: 1px solid #00a884;
+  color: #00a884;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="login">
+  <div class="login-box">
+    <h2>💈 BarberSaaS</h2>
+    <input id="user" placeholder="Usuario">
+    <input id="pass" type="password" placeholder="Contraseña">
+    <button class="btn-gold" onclick="loginFn()">Entrar</button>
+    <hr style="border-color:#333">
+    <p style="text-align:center; color:#aaa; font-size:13px;">¿No tienes cuenta?</p>
+    <select id="rol-registro">
+      <option value="cliente">Registrarme como Cliente</option>
+      <option value="barbero">Registrarme como Barbero</option>
+    </select>
+    <button class="btn-outline" onclick="registroFn()">Crear cuenta</button>
+  </div>
+</div>
+
+
+<!-- ===== APP ===== -->
+<div id="app">
+
+  <!-- NAVBAR -->
+  <div id="navbar">
+    <h1>💈 BarberSaaS</h1>
+    <span>👤 <b id="nav-usuario"></b> — <span id="nav-rol"></span></span>
+  </div>
+
+  <!-- TABS -->
+  <div id="tabs">
+    <div class="tab activo" onclick="mostrarPanel('turnos')">✂️ Mis Turnos</div>
+    <div class="tab" onclick="mostrarPanel('nuevo-turno')">➕ Pedir Turno</div>
+    <div class="tab" onclick="mostrarPanel('servicios')">💈 Servicios</div>
+    <div class="tab" id="tab-admin" style="display:none" onclick="mostrarPanel('admin')">🛠️ Admin</div>
+  </div>
+
+  <!-- PANEL: MIS TURNOS -->
+  <div class="panel activo" id="panel-turnos">
+    <h2>✂️ Mis Turnos</h2>
+    <div id="lista-turnos"><p style="color:#aaa">Cargando...</p></div>
+  </div>
+
+  <!-- PANEL: NUEVO TURNO -->
+  <div class="panel" id="panel-nuevo-turno">
+    <h2>➕ Pedir un Turno</h2>
+    <p style="color:#aaa; margin-bottom:16px; font-size:13px;">⏰ Horario de atención: Lunes a Sábado, 8:00am – 6:00pm</p>
+    <div class="form-group">
+      <select id="sel-barbero" onchange="cargarServiciosSelect()">
+        <option value="">Selecciona un barbero...</option>
+      </select>
+      <select id="sel-servicio" onchange="actualizarDuracion()">
+        <option value="">Selecciona un servicio...</option>
+      </select>
+      <p class="form-hint" id="duracion-hint"></p>
+      <input type="datetime-local" id="sel-fecha" min="">
+      <p class="form-hint">Elige fecha y hora de inicio. El sistema verifica disponibilidad automáticamente.</p>
+      <button class="btn-gold" onclick="crearTurno()">Reservar Turno</button>
+    </div>
+    <div id="turno-msg"></div>
+  </div>
+
+  <!-- PANEL: SERVICIOS -->
+  <div class="panel" id="panel-servicios">
+    <h2>💈 Servicios Disponibles</h2>
+    <div class="servicios-grid" id="lista-servicios"></div>
+  </div>
+
+  <!-- PANEL: ADMIN -->
+  <div class="panel" id="panel-admin">
+    <h2>🛠️ Panel de Barbero</h2>
+
+    <h3 style="color:#c9a84c; margin-bottom:12px;">📅 Agenda del Día</h3>
+    <div id="agenda-hoy"><p style="color:#aaa">Cargando...</p></div>
+
+    <hr class="separador">
+
+    <h3 style="color:#c9a84c; margin-bottom:12px;">Todos los Turnos</h3>
+    <div id="lista-admin-turnos"><p style="color:#aaa">Cargando...</p></div>
+
+    <hr class="separador">
+
+    <h3 style="color:#c9a84c; margin-bottom:12px;">💼 Gestión de Barberos</h3>
+    <p style="color:#aaa; margin-bottom:14px; font-size:13px;">Aquí puedes despedir barberos. Sus turnos también serán eliminados automáticamente.</p>
+    <div id="lista-barberos-admin"><p style="color:#aaa">Cargando...</p></div>
+
+    <hr class="separador">
+
+    <h3 style="color:#c9a84c; margin-bottom:12px;">Agregar Servicio</h3>
+    <div class="form-group">
+      <input id="serv-nombre" placeholder="Nombre del servicio (ej: Corte + Barba)">
+      <input id="serv-precio" type="number" placeholder="Precio ($)">
+      <input id="serv-duracion" type="number" placeholder="Duración (minutos)">
+      <button class="btn-gold" onclick="crearServicio()">Agregar Servicio</button>
+    </div>
+    <p id="serv-msg" style="color:#c9a84c; margin-top:8px;"></p>
+  </div>
+
+</div>
+
+
+<script>
+
+let usuarioActual = "";
+let rolActual = "";
+let serviciosCache = [];
+
+// ===== AUTH =====
+
+async function loginFn() {
+  const username = document.getElementById("user").value.trim();
+  const password = document.getElementById("pass").value.trim();
+  if (!username || !password) return alert("Completa todos los campos");
+
+  const res = await fetch("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
+  if (res.ok) {
+    const data = await res.json();
+    usuarioActual = data.username;
+    rolActual = data.rol;
+    iniciarApp();
+  } else {
+    alert("Usuario o contraseña incorrectos");
+  }
+}
+
+async function registroFn() {
+  const username = document.getElementById("user").value.trim();
+  const password = document.getElementById("pass").value.trim();
+  const rol = document.getElementById("rol-registro").value;
+  if (!username || !password) return alert("Completa todos los campos");
+
+  const res = await fetch("/registro", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password, rol })
+  });
+
+  if (res.ok) {
+    alert("✅ Cuenta creada. Ahora puedes iniciar sesión.");
+  } else {
+    alert("❌ Ese usuario ya existe.");
+  }
+}
+
+function iniciarApp() {
+  document.getElementById("login").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  document.getElementById("nav-usuario").innerText = usuarioActual;
+  document.getElementById("nav-rol").innerText = rolActual === "barbero" ? "Barbero ✂️" : "Cliente";
+
+  // Fijar fecha mínima en el selector (hoy)
+  const ahora = new Date();
+  const min = ahora.toISOString().slice(0, 16);
+  document.getElementById("sel-fecha").min = min;
+  document.getElementById("sel-fecha").value = min;
+
+  if (rolActual === "barbero") {
+    document.getElementById("tab-admin").style.display = "block";
+  }
+
+  cargarTurnos();
+  cargarBarberos();
+  cargarServicios();
+}
+
+// ===== TABS =====
+
+function mostrarPanel(id) {
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("activo"));
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("activo"));
+  document.getElementById("panel-" + id).classList.add("activo");
+  event.target.classList.add("activo");
+
+  if (id === "turnos")      cargarTurnos();
+  if (id === "admin")       { cargarAdminTurnos(); cargarAgendaHoy(); cargarBarberosAdmin(); }
+  if (id === "servicios")   cargarServicios();
+  if (id === "nuevo-turno") { cargarBarberos(); cargarServiciosSelect(); }
+}
+
+// ===== TURNOS =====
+
+function formatFecha(fecha) {
+  return new Date(fecha).toLocaleString("es-CO", {
+    weekday: "short", year: "numeric", month: "short",
+    day: "numeric", hour: "2-digit", minute: "2-digit"
+  });
+}
+
+function formatHora(fecha) {
+  return new Date(fecha).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+}
+
+async function cargarTurnos() {
+  const res = await fetch("/turnos/" + usuarioActual);
+  const turnos = await res.json();
+  const cont = document.getElementById("lista-turnos");
+
+  if (turnos.length === 0) {
+    cont.innerHTML = `<p style="color:#aaa">No tienes turnos aún. ¡Pide uno!</p>`;
+    return;
+  }
+
+  cont.innerHTML = turnos.map(t => `
+    <div class="card">
+      <h3>✂️ ${t.servicio} <span class="badge badge-${t.estado}">${t.estado}</span></h3>
+      <p>👤 Barbero: <b>${t.barbero}</b></p>
+      <p>📅 ${formatFecha(t.fechaInicio)}</p>
+      <p>⏱ Duración: ${t.duracion} min &nbsp;|&nbsp; Termina: <b>${formatHora(t.fechaFin)}</b></p>
+    </div>
+  `).join("");
+}
+
+async function crearTurno() {
+  const barbero  = document.getElementById("sel-barbero").value;
+  const sel      = document.getElementById("sel-servicio");
+  const servicio = sel.options[sel.selectedIndex]?.text.split(" —")[0];
+  const fechaVal = document.getElementById("sel-fecha").value;
+
+  if (!barbero || !sel.value || !fechaVal) {
+    return mostrarMsg("turno-msg", "Completa todos los campos.", "error");
+  }
+
+  const servicioObj = serviciosCache.find(s => s.nombre === servicio);
+  if (!servicioObj) return mostrarMsg("turno-msg", "Servicio no encontrado.", "error");
+
+  const res = await fetch("/turno", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      cliente: usuarioActual,
+      barbero,
+      servicio: servicioObj.nombre,
+      duracion: servicioObj.duracion,
+      fechaInicio: new Date(fechaVal).toISOString()
+    })
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    mostrarMsg("turno-msg", `✅ Turno reservado de ${formatHora(data.fechaInicio)} a ${formatHora(data.fechaFin)}.`, "success");
+  } else {
+    mostrarMsg("turno-msg", "❌ " + data.error, "error");
+  }
+}
+
+function mostrarMsg(id, texto, tipo) {
+  const el = document.getElementById(id);
+  el.innerHTML = `<div class="${tipo}-msg">${texto}</div>`;
+  setTimeout(() => el.innerHTML = "", 5000);
+}
+
+// ===== ADMIN =====
+
+async function cargarAgendaHoy() {
+  const res = await fetch("/turnos");
+  const turnos = await res.json();
+  const cont = document.getElementById("agenda-hoy");
+
+  const hoy = new Date().toDateString();
+  const turnosHoy = turnos.filter(t =>
+    new Date(t.fechaInicio).toDateString() === hoy &&
+    t.barbero === usuarioActual &&
+    t.estado !== "cancelado"
+  );
+
+  if (turnosHoy.length === 0) {
+    cont.innerHTML = `<p style="color:#aaa">No hay turnos para hoy.</p>`;
+    return;
+  }
+
+  cont.innerHTML = turnosHoy.map(t => `
+    <div class="horario-bar">
+      <span class="horario-hora">${formatHora(t.fechaInicio)} → ${formatHora(t.fechaFin)}</span>
+      <span class="horario-info">✂️ ${t.servicio} &nbsp;|&nbsp; 👤 ${t.cliente} &nbsp;|&nbsp; ⏱ ${t.duracion} min</span>
+      <span class="badge badge-${t.estado}">${t.estado}</span>
+    </div>
+  `).join("");
+}
+
+async function cargarAdminTurnos() {
+  const res = await fetch("/turnos");
+  const turnos = await res.json();
+  const cont = document.getElementById("lista-admin-turnos");
+
+  if (turnos.length === 0) {
+    cont.innerHTML = `<p style="color:#aaa">No hay turnos registrados.</p>`;
+    return;
+  }
+
+  cont.innerHTML = turnos.map(t => `
+    <div class="card">
+      <h3>✂️ ${t.servicio} <span class="badge badge-${t.estado}">${t.estado}</span></h3>
+      <p>👤 Cliente: <b>${t.cliente}</b> → Barbero: <b>${t.barbero}</b></p>
+      <p>📅 ${formatFecha(t.fechaInicio)} → termina ${formatHora(t.fechaFin)}</p>
+      <p>⏱ Duración: ${t.duracion} min</p>
+      <div>
+        <button class="btn-small btn-confirmar" onclick="cambiarEstado('${t._id}','confirmado')">Confirmar</button>
+        <button class="btn-small btn-completar" onclick="cambiarEstado('${t._id}','completado')">Completar</button>
+        <button class="btn-small btn-cancelar"  onclick="cambiarEstado('${t._id}','cancelado')">Cancelar</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+async function cambiarEstado(id, estado) {
+  await fetch("/turno/estado", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, estado })
+  });
+  cargarAdminTurnos();
+  cargarAgendaHoy();
+}
+
+// ===== SERVICIOS =====
+
+async function cargarServicios() {
+  const res = await fetch("/servicios");
+  serviciosCache = await res.json();
+  const cont = document.getElementById("lista-servicios");
+
+  if (serviciosCache.length === 0) {
+    cont.innerHTML = `<p style="color:#aaa">No hay servicios registrados aún.</p>`;
+    return;
+  }
+
+  cont.innerHTML = serviciosCache.map(s => `
+    <div class="servicio-card">
+      <h3>${s.nombre}</h3>
+      <p>💵 $${s.precio.toLocaleString()}</p>
+      <p>⏱ ${s.duracion} min</p>
+    </div>
+  `).join("");
+}
+
+async function cargarServiciosSelect() {
+  if (serviciosCache.length === 0) {
+    const res = await fetch("/servicios");
+    serviciosCache = await res.json();
+  }
+  const sel = document.getElementById("sel-servicio");
+  sel.innerHTML = `<option value="">Selecciona un servicio...</option>`;
+  serviciosCache.forEach(s => {
+    sel.innerHTML += `<option value="${s._id}">${s.nombre} — $${s.precio.toLocaleString()} (${s.duracion} min)</option>`;
+  });
+}
+
+function actualizarDuracion() {
+  const sel = document.getElementById("sel-servicio");
+  const id = sel.value;
+  const serv = serviciosCache.find(s => s._id === id);
+  const hint = document.getElementById("duracion-hint");
+  if (serv) {
+    hint.innerText = `⏱ Este servicio dura ${serv.duracion} minutos.`;
+  } else {
+    hint.innerText = "";
+  }
+}
+
+async function crearServicio() {
+  const nombre   = document.getElementById("serv-nombre").value.trim();
+  const precio   = document.getElementById("serv-precio").value;
+  const duracion = document.getElementById("serv-duracion").value;
+  if (!nombre || !precio || !duracion) return alert("Completa todos los campos");
+
+  const res = await fetch("/servicio", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nombre, precio: Number(precio), duracion: Number(duracion) })
+  });
+
+  if (res.ok) {
+    document.getElementById("serv-msg").innerText = "✅ Servicio agregado.";
+    document.getElementById("serv-nombre").value = "";
+    document.getElementById("serv-precio").value = "";
+    document.getElementById("serv-duracion").value = "";
+    setTimeout(() => document.getElementById("serv-msg").innerText = "", 3000);
+    cargarServicios();
+  } else {
+    alert("Error al crear servicio");
+  }
+}
+
+// ===== BARBEROS =====
+
+async function cargarBarberos() {
+  const res = await fetch("/barberos");
+  const barberos = await res.json();
+  const sel = document.getElementById("sel-barbero");
+  sel.innerHTML = `<option value="">Selecciona un barbero...</option>`;
+  barberos.forEach(b => {
+    sel.innerHTML += `<option value="${b.username}">✂️ ${b.username}</option>`;
+  });
+}
+
+// ===== DESPIDOS =====
+
+async function cargarBarberosAdmin() {
+  const res = await fetch("/barberos");
+  const barberos = await res.json();
+  const cont = document.getElementById("lista-barberos-admin");
+
+  if (barberos.length === 0) {
+    cont.innerHTML = `<p style="color:#aaa">No hay barberos registrados.</p>`;
+    return;
+  }
+
+  cont.innerHTML = barberos.map(b => `
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <h3>✂️ ${b.username}</h3>
+        <p>Rol: Barbero</p>
+      </div>
+      <button class="btn-small btn-cancelar" onclick="despedirBarbero('${b.username}')">
+        🔥 Despedir
+      </button>
+    </div>
+  `).join("");
+}
+
+async function despedirBarbero(username) {
+  const confirmar = confirm("¿Seguro que quieres despedir a " + username + "? Sus turnos también serán eliminados.");
+  if (!confirmar) return;
+
+  const res = await fetch("/despedir/" + username, { method: "POST" });
+
+  if (res.ok) {
+    alert("💼 " + username + " ha sido despedido exitosamente.");
+    cargarBarberosAdmin();
+    cargarAdminTurnos();
+    cargarAgendaHoy();
+  } else {
+    alert("Error al despedir barbero");
+  }
+}
+
+</script>
+</body>
+</html>
