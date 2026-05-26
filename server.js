@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
 // 🔥 CONEXIÓN A MONGODB
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect("mongodb://mongo:skrhcLepsFEcIXYFMYEgEXAJXqyPpGsf@roundhouse.proxy.rlwy.net:53249")
 .then(() => console.log("✅ Conectado a MongoDB"))
 .catch(err => console.log("❌ Error:", err));
 // =====================
