@@ -64,10 +64,10 @@ app.post("/registro", async (req, res) => {
         const nuevo = new Usuario({ username, password, rol: rol || "cliente" });
         await nuevo.save();
         res.json({ ok: true });
-    } catch (error) {
-        res.status(500).json({ error: "Usuario ya existe" });
-    }
-});
+} catch (error) {
+    console.log("ERROR REGISTRO:", error.message);
+    res.status(500).json({ error: error.message });
+}
 
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
